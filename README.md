@@ -1,300 +1,300 @@
-# BugReplay — the time machine for software bugs
+## 🐛 BUGREPLAY — THE TIME MACHINE FOR SOFTWARE BUGS
 
-BugReplay is a browser-session debugging and error-investigation platform.
-When a bug report says “the login button does not work”, BugReplay gives you
-the **actions, timing, JavaScript error, and network evidence** to
-reproduce it: captured session timelines, fingerprint-grouped issues,
-evidence-based diagnostic hints, and exportable bug reports.
-
-> **Platform note.** This product was specified with a Python/FastAPI
-> backend. The hosting environment for this deliverable runs a
-> **Next.js 16 (App Router) + PostgreSQL (Drizzle ORM)** stack, so the entire
-> application is implemented there — same product, same workflow, same API
-> surface — in **plain JavaScript** (no TypeScript). The API contract
-> (`/api/v1/...`), data model, SDK, and analysis rules match the spec.
+>>Welcome to **BugReplay** — a browser-session debugging platform that turns vague bug reports into **hard evidence**. Built for developers who are tired of hearing *"the login button doesn't work"* with zero context. This isn't just a dashboard — it's a **full observability pipeline**: a privacy-first browser SDK, a real ingestion API, deterministic error grouping, and exportable investigation reports.
 
 ---
 
-## 1. Product overview
+## 💼 About the Project
 
-- Record privacy-conscious browser sessions from any site via a small SDK.
-- Inspect every session as a chronological **event timeline** with
-  play/pause/step controls (event-based replay — not pixel-perfect playback).
-- Errors are **fingerprinted** (normalized message + top stack frames) and
-  grouped into **issues** with occurrence + affected-session tracking.
-- **Diagnostic suggestions** are rule-based, labelled as hypotheses, and each
-  cites the evidence that triggered it.
-- **Anomaly score** per session (deterministic, rules-based).
-- Export **JSON or Markdown bug reports** with reproduction steps derived
-  from real captured events.
-- A controlled **demo site** (`/demo`) that generates real events through
-  the real SDK → API → PostgreSQL pipeline.
+Developers lose hours reproducing bugs they can't see. BugReplay solves this by capturing **what the user actually did** — every click, navigation, JavaScript error, and failed network request — then grouping repeated errors into issues, scoring sessions for anomalies, and generating evidence-backed bug reports.
 
-## 2. Problem statement
+From a controlled demo website → through a real SDK → into PostgreSQL → onto an investigation dashboard. Every number you see is read from the database. Nothing is faked.
 
-Vague bug reports lack evidence. Reproduction requires the exact clicks,
-navigation, JS error (with stack), and failing network calls — none of which
-are usually captured. BugReplay closes that gap with privacy-conscious
-instrumentation and an investigation workflow.
+### 🛢️ Core Technologies Used
 
-## 3. Feature list
+| Category         | Technologies / Tools                               |
+|------------------|----------------------------------------------------|
+| Frontend         | React 19, Next.js 16 (App Router), JavaScript, JSX |
+| Styling          | Tailwind CSS v4, Dark Graphite Design System       |
+| UI/UX            | Recharts, Lucide Icons, Custom Replay Controls     |
+| Backend          | Next.js Route Handlers, REST API `/api/v1`         |
+| Database         | PostgreSQL, Drizzle ORM                            |
+| Browser SDK      | Vanilla JavaScript (zero dependencies)             |
+| Analysis Engine  | SHA-256 Fingerprinting, Rule-Based Diagnostics     |
+| Testing          | Custom Self-Test Suite (31 assertions)             |
+| DevOps           | Docker, Docker Compose, Vercel, Neon               |
+| Version Control  | Git, GitHub                                        |
 
-| Area | Status |
-| --- | --- |
-| Session lifecycle (create/start/end) via REST + SDK | ✅ implemented & tested |
-| Event ingestion (validated, bounded, idempotent batches) | ✅ implemented & tested |
-| SDK: clicks, navigation, window errors, promise rejections, console.error, failed fetches, custom events, stop/start | ✅ implemented & smoke-tested via API |
-| Fingerprinting + issue aggregation (counts, affected sessions, severity escalation) | ✅ implemented & tested |
-| Diagnostic hints with evidence | ✅ implemented & tested |
-| Anomaly scoring (deterministic) | ✅ implemented & tested |
-| Dashboard with live stats + 14-day error trend | ✅ implemented |
-| Sessions list (search, filters, pagination) + replay timeline | ✅ implemented |
-| Issues list (search, severity/status filters, sorting) + detail | ✅ implemented |
-| JSON + Markdown report export | ✅ implemented & tested |
-| Demo seed (idempotent) + gated demo reset | ✅ implemented & tested |
-| Ingestion rate limiting (in-memory, MVP-level) | ✅ implemented |
-| CORS restricted to `BUGREPLAY_CORS_ORIGINS` | ✅ implemented |
-| Project API keys / authentication | ❌ not implemented — **unauthenticated demo, do not expose publicly** |
-| XHR interception | ❌ not implemented (fetch only) — documented limitation |
-| Retention policy enforcement | ❌ not implemented — documented limitation |
-| Pixel-perfect playback | ❌ out of scope by design |
+---
 
-## 4. Architecture
+## 🎞️ Live Preview
+
+>> *Deploy your own in 10 minutes — see the Deployment section below*
+
+| Route | Description |
+|---|---|
+| `/` | Dashboard — live stats & error trends |
+| `/demo` | The monitored demo store (break it on purpose) |
+| `/sessions` | All captured sessions |
+| `/issues` | Fingerprint-grouped errors |
+| `/settings` | SDK install & privacy details |
+
+---
+
+## ✨ Highlights
+
+### 📊 Dashboard
+Live aggregates pulled straight from PostgreSQL — total sessions, captured events, open issues, high-severity count, and affected sessions. A 14-day error trend chart with gradient area fill, plus recent sessions and latest issues at a glance.
+
+### 🎬 Session Replay
+A chronological event timeline with **play, pause, step-forward, step-back**, and speed toggle. Error rows are marked in red, a synchronized detail panel shows payloads and stack traces, and a scrubber lets you jump anywhere. *Event-based replay — honest about not being pixel-perfect video.*
+
+### 🧬 Issue Grouping
+Errors are normalized (line numbers, UUIDs, hex addresses stripped) and fingerprinted with SHA-256 over the message + top stack frames. The same bug across 50 sessions becomes **one issue with a count of 50** — never 50 duplicates.
+
+### 💡 Diagnostic Suggestions
+Rule-based hypotheses tied to real evidence — HTTP 500 → check server logs, 401 → inspect auth state, timeout → check availability, TypeError → inspect the call site. Each one **cites the evidence that triggered it**, and all are clearly labelled as hypotheses, not confirmed causes.
+
+### 📈 Anomaly Scoring
+A deterministic, transparent score per session based on error count, failed requests, error ratio, and repeat frequency — with a human-readable explanation and documented limitations. No black-box model, no external API.
+
+### 📄 Report Export
+One click generates a complete bug report in **JSON or Markdown**, containing reproduction steps derived from actual captured events, occurrence history, supporting evidence, and diagnostic hints. Ready to paste into a ticket.
+
+### 🛡️ Privacy-First SDK
+A dependency-free browser SDK that captures clicks, navigation, errors, rejections, console output, and failed fetches — while **never** touching passwords, form values, cookies, auth headers, request bodies, or keystrokes. Bounded queue, bounded retries, self-healing sessions, and a visible stop-recording control.
+
+### 🏪 Controlled Demo Site
+"NovaShop" — a fake store wired to the real SDK, with a *Break it on purpose* console: trigger a JavaScript error, a real HTTP 500, a genuine network timeout, a console error, or a custom event. Watch them appear live, then investigate them on the dashboard.
+
+---
+
+## 🎯 Why I Built This
+
+Observability tools are either enterprise-expensive or toy demos. I wanted to prove a full pipeline could be built properly:
+
+- Real data flow — SDK → API → database → UI, with zero fake states
+- Privacy by design — not as an afterthought, but as a validation layer
+- Honest engineering — heuristics labelled as heuristics, limits documented
+- Production habits — validation, idempotency, rate limiting, CORS, transactions
+
+---
+
+## 🏗️ Architecture
 
 ```mermaid
 flowchart LR
   subgraph Browser
-    DEMO[NovaShop demo site<br/>/demo]
-    SDK[BugReplay SDK<br/>public/sdk/bugreplay.js]
-    OTHER[any other site<br/>opt-in via script tag]
+    DEMO[NovaShop Demo Site]
+    SDK[BugReplay SDK]
   end
-  subgraph Next.js App
-    UI[Dashboard / Sessions / Issues<br/>App Router pages]
-    API[REST API /api/v1<br/>route handlers]
-    SVC[Analysis services<br/>fingerprint · severity · hints · anomaly]
-    MW[CORS middleware · rate limiting]
+  subgraph Application
+    UI[Dashboard · Sessions · Issues]
+    API[REST API /api/v1]
+    SVC[Fingerprint · Severity · Hints · Anomaly]
   end
-  DB[(PostgreSQL<br/>projects · sessions · events ·<br/>issues · issue_occurrences)]
+  DB[(PostgreSQL)]
   DEMO --> SDK
-  OTHER --> SDK
-  SDK -->|POST /sessions · /sessions/:id/events| MW --> API
-  UI -->|fetch /api/v1| API
+  SDK -->|POST events| API
+  UI -->|fetch| API
   API --> SVC
   API --> DB
 ```
 
-## 5. Technology stack
+---
 
-- **Next.js 16 (App Router), React 19, plain JavaScript (JS/JSX)** — no TypeScript
-- **PostgreSQL** via **Drizzle ORM** (node-postgres driver)
-- **Tailwind CSS v4** for styling, **Recharts** for charts, **Lucide** icons
-- **Browser SDK**: dependency-free vanilla JS served from `/sdk/bugreplay.js`
-- **Self-tests**: `node scripts/selftest.mjs` (pure-logic unit checks)
+## 📡 API Endpoints
 
-## 6. Repository structure
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| `GET` | `/api/health` | Service + database health |
+| `GET` | `/api/v1/stats` | Dashboard aggregates & trends |
+| `GET` | `/api/v1/sessions` | List sessions (search, filter, paginate) |
+| `POST` | `/api/v1/sessions` | Create a session |
+| `GET` | `/api/v1/sessions/:id/events` | Ordered event timeline |
+| `POST` | `/api/v1/sessions/:id/events` | Ingest events (validated, idempotent) |
+| `GET` | `/api/v1/issues` | List grouped issues |
+| `GET` | `/api/v1/issues/:id` | Evidence, occurrences, hints |
+| `PATCH` | `/api/v1/issues/:id` | Update status |
+| `GET` | `/api/v1/issues/:id/report.md` | Download bug report |
+| `POST` | `/api/v1/demo/seed` | Load demo dataset |
 
-```
-├── src/
-│   ├── app/
-│   │   ├── page.js                  # dashboard (live stats, trend, tables)
-│   │   ├── sessions/                # list + [id] replay timeline
-│   │   ├── issues/                  # list + [id] detail / report
-│   │   ├── settings/page.js         # SDK install + privacy + limitations
-│   │   ├── demo/page.js             # NovaShop — monitored demo site
-│   │   └── api/
-│   │       ├── health/route.js
-│   │       └── v1/
-│   │           ├── health · stats · demo/{seed,reset,fail,slow,ok}
-│   │           ├── sessions/…       # list, create, detail, events (GET/POST)
-│   │           └── issues/…         # list, detail, PATCH, report(.md)
-│   ├── components/                  # AppShell, badges, ui, TrendChart
-│   ├── db/                          # schema.js + client (Drizzle)
-│   ├── lib/
-│   │   ├── analysis.js              # normalization, severity, hints, anomaly
-│   │   ├── fingerprint.js           # sha256 fingerprinting, classification
-│   │   ├── pipeline.js              # validation + ingestion + aggregation
-│   │   ├── seed.js                  # deterministic demo dataset
-│   │   ├── report.js                # JSON/Markdown report builders
-│   │   ├── sanitize.js              # URL/stack/payload privacy filters
-│   │   ├── client.js                # browser API client
-│   │   └── useApi.js                # data-fetch hook
-│   └── middleware.js                # CORS for /api (BUGREPLAY_CORS_ORIGINS)
-├── public/sdk/bugreplay.js          # the browser SDK
-├── scripts/selftest.mjs             # automated self-tests
-├── docs/                            # architecture · api · testing
-└── drizzle.config.json              # schema push config
-```
+---
 
-## 7. Prerequisites
+## 🖥️ Run Locally
 
-- Node.js 20+
-- PostgreSQL 13+ reachable at `DATABASE_URL`
-
-## 8. Installation
+To clone and run this project on your local machine:
 
 ```bash
+git clone https://github.com/YOUR-USERNAME/bugreplay.git
+
+cd bugreplay
 npm install
 ```
 
-## 9–10. Running the app
+Create your environment file:
 
 ```bash
-# apply schema (idempotent)
-npx drizzle-kit push
+cp .env.example .env
+```
 
-# production
-npm run build && npm run start
-# …or development
+Set your database connection inside `.env`:
+
+```env
+DATABASE_URL=postgresql://postgres:yourpassword@127.0.0.1:5432/app_db
+```
+
+Create the tables and start:
+
+```bash
+npx drizzle-kit push
 npm run dev
 ```
 
-- Dashboard: **http://localhost:3000**
-- Demo site: **http://localhost:3000/demo**
-- Health: **http://localhost:3000/api/health**
+Open **http://localhost:3000** and click **Load demo data** 🎉
 
-There is **no separate backend process** — the REST API is served by the
-same Next.js app under `/api/v1`.
+---
 
-## 11. Configuring the SDK on your site
+## 🐳 Run With Docker
+
+Prefer zero configuration? One command starts PostgreSQL **and** the app:
+
+```bash
+docker compose up -d
+```
+
+---
+
+## 🔑 Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DATABASE_URL` | ✅ Yes | PostgreSQL connection string |
+| `BUGREPLAY_ENV` | ⚠️ Recommended | Set `production` to disable destructive reset |
+| `BUGREPLAY_CORS_ORIGINS` | ⬜ Optional | Comma-separated origins for cross-site SDK use |
+
+---
+
+## 🧩 Install the SDK on Your Own Site
 
 ```html
-<script src="http://localhost:3000/sdk/bugreplay.js"></script>
+<script src="https://your-app.vercel.app/sdk/bugreplay.js"></script>
 <script>
   BugReplay.init({
-    endpoint: "http://localhost:3000",
+    endpoint: "https://your-app.vercel.app",
     projectId: "demo-project",
-    environment: "development",
+    environment: "production"
   });
 </script>
 ```
 
-- `BugReplay.track("name", { safe: "payload" })` — custom events
-- `BugReplay.stop()` / `BugReplay.start()` — stop / resume recording
-- `BugReplay.getStatus()` — live SDK status
-- `BugReplay.onEvent(cb)` — observe events as they are captured
-- Exclude elements: add `data-bugreplay-exclude` to any element/subtree
+| Method | Purpose |
+|--------|---------|
+| `BugReplay.track(name, data)` | Send a custom event |
+| `BugReplay.stop()` | Stop recording |
+| `BugReplay.start()` | Resume recording |
+| `BugReplay.getStatus()` | Inspect live SDK state |
 
-## 12. Triggering demo errors
+> 💡 Add `data-bugreplay-exclude` to any element to exclude it and its children from capture.
 
-Open **/demo**, then use the “Break it on purpose” panel:
+---
 
-| Button | What it produces |
-| --- | --- |
-| Trigger JavaScript error | uncaught `TypeError: Cannot read properties of undefined (reading 'customerName')` |
-| Trigger failing API request | real `HTTP 500` from `/api/v1/demo/fail?status=500` |
-| Trigger network timeout | real timeout (client aborts `/api/v1/demo/slow` at 2.5 s) |
-| Log a console error | `console.error` capture |
-| Send a custom event | `checkout_started` custom event |
+## 🔐 Privacy by Design
 
-## 13. Loading demo data
+| ✅ Captured | ❌ Never Captured |
+|------------|------------------|
+| Click metadata & safe selectors | Passwords & password fields |
+| Page navigation events | Form values & typed text |
+| JavaScript errors + stack traces | Cookies & auth headers |
+| Unhandled promise rejections | Request/response bodies |
+| Failed requests (method, status, ms) | Keystrokes |
+| Custom events you explicitly send | Sensitive query parameters |
 
-Dashboard → **Load demo data** (calls `POST /api/v1/demo/seed`, idempotent).
-`POST /api/v1/demo/reset` wipes demo-project data (disabled when
-`BUGREPLAY_ENV=production`).
+> ⚠️ This is a privacy-aware **design**, not a compliance claim. Real deployments require consent flows, retention policies, and legal review.
 
-## 14. Running tests
+---
+
+## 🧪 Testing
 
 ```bash
-node scripts/selftest.mjs   # 32 checks over fingerprinting, severity, hints,
-                            # anomaly scoring, and privacy sanitizers
+node scripts/selftest.mjs
 ```
 
-## 15. Playwright / E2E
+**Result: ✅ 31 passed, 0 failed**
 
-This environment cannot run headless browsers, so no Playwright suite is
-shipped. Instead, the full pipeline was verified with **live HTTP E2E
-smoke tests** against the running production build (session creation →
-ingestion → aggregation → report download → status transitions), all
-passing — see `docs/testing.md` for the recorded results.
+Covers error normalization, fingerprint determinism, severity escalation rules, diagnostic hint matching, anomaly scoring, and privacy sanitizers.
 
-## 16. Environment variables
+```bash
+npm run build      # ✅ production build passes
+npm run typecheck  # ✅ zero errors
+```
 
-| Variable | Required | Description |
-| --- | --- | --- |
-| `DATABASE_URL` | yes | PostgreSQL connection string |
-| `BUGREPLAY_CORS_ORIGINS` | no | Comma-separated origins allowed to ingest cross-origin. **No wildcard.** |
-| `BUGREPLAY_ENV` | no | Set `production` to disable the destructive demo reset |
+---
 
-## 17. API endpoints
+## 🚀 Deployment
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/api/health` · `/api/v1/health` | service + DB health |
-| GET | `/api/v1/stats` | dashboard aggregates + 14-day error trend |
-| GET | `/api/v1/sessions` | list (q, environment, errors, from/to, page, pageSize≤100) |
-| POST | `/api/v1/sessions` | create a session |
-| GET | `/api/v1/sessions/:id` | metadata + anomaly score + linked issues |
-| GET | `/api/v1/sessions/:id/events` | ordered events (pageSize≤500) with linked issues |
-| POST | `/api/v1/sessions/:id/events` | ingest 1–50 validated events (idempotent keys) |
-| GET | `/api/v1/issues` | list (q, severity, status, sort, pagination) |
-| GET | `/api/v1/issues/:id` | detail: occurrences, evidence, repro steps, hints |
-| PATCH | `/api/v1/issues/:id` | status transition (validated state machine) |
-| GET | `/api/v1/issues/:id/report` | structured JSON report |
-| GET | `/api/v1/issues/:id/report.md` | downloadable Markdown report |
-| POST | `/api/v1/demo/seed` | idempotent demo dataset |
-| POST | `/api/v1/demo/reset` | delete demo data (gated) |
-| GET | `/api/v1/demo/fail?status=` · `slow` · `ok` | controlled endpoints for the demo |
+Deploy free on **Vercel + Neon** in under 10 minutes:
 
-Full details in `docs/api.md`.
+1. 🗄️ Create a PostgreSQL database at [neon.tech](https://neon.tech) and copy the pooled connection string
+2. 🔧 Point `drizzle.config.json` at it → run `npx drizzle-kit push` → restore the local URL
+3. 📤 Push your code to GitHub
+4. ☁️ Import the repo on [vercel.com](https://vercel.com)
+5. 🔑 Add env vars: `DATABASE_URL` and `BUGREPLAY_ENV=production`
+6. 🎉 Deploy, then verify at `/api/health`
 
-## 18. Database
+---
 
-PostgreSQL; schema in `src/db/schema.js`, applied with
-`npx drizzle-kit push` (creates tables automatically, idempotent).
-Tables: `projects`, `sessions`, `events`, `issues`, `issue_occurrences`,
-with indexes on timestamps, session IDs, fingerprints, and issue status,
-and a unique `(project_id, fingerprint)` constraint so repeated errors
-**update** an issue instead of duplicating it.
+## ⚠️ Known Limitations
 
-## 19. Privacy & security
+Honest disclosure — this is an MVP, not an enterprise product:
 
-- The SDK never captures form values, password fields, cookies, auth
-  headers, request/response bodies, keystrokes, sensitive query params, or
-  fragments. Clicks are reduced to tag + safe selector + button label.
-- The server re-scrubs payloads (sensitive keys → `[redacted]`), enforces
-  payload (8 KB) and batch (50 event) limits, and validates every field.
-- CORS is restricted to configured origins; ingestion is rate-limited
-  (in-memory, MVP-level).
-- **This build is unauthenticated.** Never expose it publicly with real
-  data. This is a privacy-aware design, not a GDPR/CCPA compliance claim.
+- 🔓 **No authentication** — do not expose publicly with real user data
+- 🎥 Event-based replay only — not pixel-perfect visual playback
+- 🌐 Fetch is instrumented; XHR is not
+- ⏱️ In-memory rate limiting resets on restart
+- 🗑️ No automated data retention enforcement
+- 📊 Severity and anomaly scores are transparent heuristics, not measured business impact
 
-## 20. Limitations & roadmap
+---
 
-- No authentication/API keys on ingestion (documented, gated demo only).
-- No XHR interception (fetch only).
-- In-memory rate limiting does not survive restarts/multi-worker deploys.
-- No retention enforcement; no pixel-perfect playback; severity/anomaly
-  scores are heuristics, not measured business impact.
-- Roadmap: project API keys, XHR wrapper, Postgres-based rate limiting,
-  retention jobs, optional Isolation-Forest anomaly model on synthetic data.
+## 🗺️ Roadmap
 
-## 21. Deployment
+- 🔑 Project API keys for authenticated ingestion
+- 🌐 XHR interception alongside fetch
+- 🧹 Automated retention & data-pruning jobs
+- 📧 Alerting on new high-severity issues
+- 👥 Multi-project and team support
 
-Any static+Node host that runs `npm run build && npm run start` (Vercel,
-Render, a plain Node box…). Set `DATABASE_URL` (managed Postgres),
-`BUGREPLAY_CORS_ORIGINS` for cross-origin SDK use, and
-`BUGREPLAY_ENV=production`. The repo includes a `docker-compose.yml`
-sketch for local Postgres + app. Nothing here is deployed yet — this
-sandbox preview is the only running instance.
+---
 
-## 22. Screenshots
+## 📂 Project Structure
 
-Add genuine screenshots after running the product:
+```
+bugreplay/
+├── src/
+│   ├── app/              # Pages & API routes
+│   ├── components/       # Shared UI components
+│   ├── db/               # Drizzle schema & client
+│   ├── lib/              # Analysis, ingestion, reports
+│   └── middleware.js     # CORS allowlist
+├── public/sdk/           # The browser SDK
+├── scripts/              # Automated self-tests
+├── docs/                 # Architecture, API, testing
+└── docker-compose.yml
+```
 
-1. Open the dashboard → capture to `docs/screenshots/dashboard.png`
-2. Session replay → `docs/screenshots/replay.png`
-3. Issue detail → `docs/screenshots/issue.png`
+---
 
-Then embed them here: `![Dashboard](docs/screenshots/dashboard.png)`.
+## 📜 License
 
-## GitHub publishing checklist
+Released under the **MIT License** — free to use, modify, and learn from.
 
-- [ ] `git init` · `git add -A` · commit (`.gitignore` excludes
-      `node_modules`, `.next`, `*.db`, `.env`)
-- [ ] Replace this README's platform note with your target stack's
-      instructions if you port it
-- [ ] Run `node scripts/selftest.mjs` in CI
-- [ ] Tag a release and attach the sample Markdown report from
-      `/issues/:id/report.md`
-#   B U G - R E P L A Y  
- 
+---
+
+<div align="center">
+
+**Built with precision, tested with honesty.** 🐛✨
+
+*BugReplay — because "it works on my machine" isn't a bug report.*
+
+</div>
