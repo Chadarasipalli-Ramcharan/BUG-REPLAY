@@ -1,6 +1,6 @@
 ## 🐛 BUGREPLAY — THE TIME MACHINE FOR SOFTWARE BUGS
 
->>Welcome to **BugReplay** — a browser-session debugging platform that turns vague bug reports into **hard evidence**. Built for developers who are tired of hearing *"the login button doesn't work"* with zero context. This isn't just a dashboard — it's a **full observability pipeline**: a privacy-first browser SDK, a real ingestion API, deterministic error grouping, and exportable investigation reports.
+>Welcome to **BugReplay** — a browser-session debugging platform that turns vague bug reports into **hard evidence**. Built for developers who are tired of hearing *"the login button doesn't work"* with zero context. This isn't just a dashboard — it's a **full observability pipeline**: a privacy-first browser SDK, a real ingestion API, deterministic error grouping, and exportable investigation reports.
 
 ---
 
@@ -10,26 +10,112 @@ Developers lose hours reproducing bugs they can't see. BugReplay solves this by 
 
 From a controlled demo website → through a real SDK → into PostgreSQL → onto an investigation dashboard. Every number you see is read from the database. Nothing is faked.
 
-### 🛢️ Core Technologies Used
+---
 
-| Category         | Technologies / Tools                               |
-|------------------|----------------------------------------------------|
-| Frontend         | React 19, Next.js 16 (App Router), JavaScript, JSX |
-| Styling          | Tailwind CSS v4, Dark Graphite Design System       |
-| UI/UX            | Recharts, Lucide Icons, Custom Replay Controls     |
-| Backend          | Next.js Route Handlers, REST API `/api/v1`         |
-| Database         | PostgreSQL, Drizzle ORM                            |
-| Browser SDK      | Vanilla JavaScript (zero dependencies)             |
-| Analysis Engine  | SHA-256 Fingerprinting, Rule-Based Diagnostics     |
-| Testing          | Custom Self-Test Suite (31 assertions)             |
-| DevOps           | Docker, Docker Compose, Vercel, Neon               |
-| Version Control  | Git, GitHub                                        |
+## 🛠️ Core Technologies
+
+### 🎨 Frontend & Styling
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=react,nextjs,js,tailwind&perline=4" alt="Frontend Technologies"/>
+</p>
+
+<p align="center">
+  <b>React 19</b> • <b>Next.js 16</b> • <b>JavaScript</b> • <b>Tailwind CSS v4</b>
+</p>
+
+---
+
+### 🧩 UI & Visualization
+
+<p align="center">
+  <img src="https://cdn.simpleicons.org/recharts/22B5BF" width="45" alt="Recharts"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://cdn.simpleicons.org/lucide/F56565" width="45" alt="Lucide Icons"/>
+</p>
+
+<p align="center">
+  <b>Recharts</b> • <b>Lucide Icons</b> • <b>Custom Replay Controls</b>
+</p>
+
+---
+
+### ⚙️ Backend & Database
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=postgres&perline=1" alt="PostgreSQL"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://cdn.simpleicons.org/drizzle/C5F74F" width="45" alt="Drizzle ORM"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://cdn.simpleicons.org/nextdotjs/FFFFFF" width="45" alt="Next.js"/>
+</p>
+
+<p align="center">
+  <b>Next.js Route Handlers</b> • <b>REST API (/api/v1)</b>
+</p>
+
+<p align="center">
+  <b>PostgreSQL</b> • <b>Drizzle ORM</b> • <b>Neon</b>
+</p>
+
+---
+
+### 🔍 Analysis & Testing
+
+<p align="center">
+  <img src="https://img.shields.io/badge/SHA--256-Fingerprinting-4B5563?style=for-the-badge" alt="SHA-256 Fingerprinting"/>
+  &nbsp;
+  <img src="https://img.shields.io/badge/Rule--Based-Diagnostics-7C3AED?style=for-the-badge" alt="Rule-Based Diagnostics"/>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Self--Tests-31%20Assertions-2EA44F?style=for-the-badge" alt="31 Test Assertions"/>
+</p>
+
+---
+
+### 🐳 DevOps & Deployment
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=docker,vercel,git,github&perline=4" alt="DevOps Technologies"/>
+</p>
+
+<p align="center">
+  <b>Docker</b> • <b>Docker Compose</b> • <b>Vercel</b> • <b>Neon</b>
+</p>
+
+---
+
+### 🌐 Browser SDK
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Vanilla_JavaScript-Zero_Dependencies-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="Vanilla JavaScript SDK"/>
+</p>
+
+---
+
+### 🧰 Version Control
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=git,github&perline=2" alt="Git and GitHub"/>
+</p>
+
+<p align="center">
+  <b>Git</b> • <b>GitHub</b>
+</p>
+
+---
+
+<p align="center">
+  <i>Built with modern web technologies, structured diagnostics, and automated testing.</i>
+</p>
 
 ---
 
 ## 🎞️ Live Preview
 
->> *Deploy your own in 10 minutes — see the Deployment section below*
+> https://bug-replay.vercel.app/
+
 
 | Route | Description |
 |---|---|
@@ -41,33 +127,6 @@ From a controlled demo website → through a real SDK → into PostgreSQL → on
 
 ---
 
-## ✨ Highlights
-
-### 📊 Dashboard
-Live aggregates pulled straight from PostgreSQL — total sessions, captured events, open issues, high-severity count, and affected sessions. A 14-day error trend chart with gradient area fill, plus recent sessions and latest issues at a glance.
-
-### 🎬 Session Replay
-A chronological event timeline with **play, pause, step-forward, step-back**, and speed toggle. Error rows are marked in red, a synchronized detail panel shows payloads and stack traces, and a scrubber lets you jump anywhere. *Event-based replay — honest about not being pixel-perfect video.*
-
-### 🧬 Issue Grouping
-Errors are normalized (line numbers, UUIDs, hex addresses stripped) and fingerprinted with SHA-256 over the message + top stack frames. The same bug across 50 sessions becomes **one issue with a count of 50** — never 50 duplicates.
-
-### 💡 Diagnostic Suggestions
-Rule-based hypotheses tied to real evidence — HTTP 500 → check server logs, 401 → inspect auth state, timeout → check availability, TypeError → inspect the call site. Each one **cites the evidence that triggered it**, and all are clearly labelled as hypotheses, not confirmed causes.
-
-### 📈 Anomaly Scoring
-A deterministic, transparent score per session based on error count, failed requests, error ratio, and repeat frequency — with a human-readable explanation and documented limitations. No black-box model, no external API.
-
-### 📄 Report Export
-One click generates a complete bug report in **JSON or Markdown**, containing reproduction steps derived from actual captured events, occurrence history, supporting evidence, and diagnostic hints. Ready to paste into a ticket.
-
-### 🛡️ Privacy-First SDK
-A dependency-free browser SDK that captures clicks, navigation, errors, rejections, console output, and failed fetches — while **never** touching passwords, form values, cookies, auth headers, request bodies, or keystrokes. Bounded queue, bounded retries, self-healing sessions, and a visible stop-recording control.
-
-### 🏪 Controlled Demo Site
-"NovaShop" — a fake store wired to the real SDK, with a *Break it on purpose* console: trigger a JavaScript error, a real HTTP 500, a genuine network timeout, a console error, or a custom event. Watch them appear live, then investigate them on the dashboard.
-
----
 
 ## 🎯 Why I Built This
 
@@ -100,24 +159,6 @@ flowchart LR
   API --> SVC
   API --> DB
 ```
-
----
-
-## 📡 API Endpoints
-
-| Method | Endpoint | Purpose |
-|--------|----------|---------|
-| `GET` | `/api/health` | Service + database health |
-| `GET` | `/api/v1/stats` | Dashboard aggregates & trends |
-| `GET` | `/api/v1/sessions` | List sessions (search, filter, paginate) |
-| `POST` | `/api/v1/sessions` | Create a session |
-| `GET` | `/api/v1/sessions/:id/events` | Ordered event timeline |
-| `POST` | `/api/v1/sessions/:id/events` | Ingest events (validated, idempotent) |
-| `GET` | `/api/v1/issues` | List grouped issues |
-| `GET` | `/api/v1/issues/:id` | Evidence, occurrences, hints |
-| `PATCH` | `/api/v1/issues/:id` | Update status |
-| `GET` | `/api/v1/issues/:id/report.md` | Download bug report |
-| `POST` | `/api/v1/demo/seed` | Load demo dataset |
 
 ---
 
