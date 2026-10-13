@@ -1,0 +1,33 @@
+# Optional local stack. The SQLite-free default path in this sandbox is the
+# configured local PostgreSQL; this file shows the portable setup.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/app_db
+      BUGREPLAY_CORS_ORIGINS: ${BUGREPLAY_CORS_ORIGINS:-}
+      BUGREPLAY_ENV: ${BUGREPLAY_ENV:-}
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

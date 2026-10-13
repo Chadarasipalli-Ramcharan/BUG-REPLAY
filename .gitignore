@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+
+# builds
+.next/
+out/
+dist/
+build/
+
+# env & secrets
+.env
+.env.local
+.env*.local
+
+# databases (never commit)
+*.db
+*.sqlite
+pgdata/
+
+# logs & misc
+*.log
+.DS_Store
+coverage/
+.idea/
+.vscode/

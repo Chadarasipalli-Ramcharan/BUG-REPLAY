@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0b0f16;
+  --color-surface: #10161f;
+  --color-raised: #151d29;
+  --color-line: #1e2a3a;
+  --color-line-soft: #17212f;
+  --color-ink: #e8edf6;
+  --color-mute: #8c99af;
+  --color-faint: #5d6b84;
+  --color-accent: #4d8dff;
+  --color-accent-deep: #2e6be6;
+  --color-danger: #ff5c6c;
+  --color-high: #ff8a4c;
+  --color-warn: #ffb454;
+  --color-ok: #34d399;
+  --color-crit: #ff3d71;
+  --font-sans: var(--font-space-grotesk), "Segoe UI", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular,
+    Menlo, monospace;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+}
+
+::selection {
+  background: rgba(77, 141, 255, 0.28);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #26344a transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #26344a;
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+  border-radius: 4px;
+}
+
+input[type="range"] {
+  accent-color: var(--color-accent);
+}
